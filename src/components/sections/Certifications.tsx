@@ -1,73 +1,94 @@
 import { motion } from "framer-motion";
-import { BadgeCheck, CircleDashed } from "lucide-react";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { certifications } from "@/data/certifications";
-import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
-import { cn } from "@/lib/cn";
+import { AiModelsList } from "@/components/ui/ai-models-preview";
+import { viewportOnce } from "@/lib/motion";
+
+const aiModels = [
+  {
+    id: "gpt-4o",
+    name: "GPT-4o",
+    provider: "OpenAI",
+    family: "GPT-4",
+    version: "2024-08-06",
+    description: "Multimodal flagship model with strong reasoning.",
+    contextWindowTokens: 128000,
+    inputPricePer1KTokensUSD: 0.005,
+    outputPricePer1KTokensUSD: 0.015,
+    supports: { vision: true, streaming: true, functionCalling: true },
+    tags: ["general", "multimodal"],
+    meta: { latencyMsP50: 320 },
+  },
+  {
+    id: "claude-3-opus",
+    name: "Claude 3 Opus",
+    provider: "Anthropic",
+    family: "Claude 3",
+    description: "High reasoning performance for complex tasks.",
+    contextWindowTokens: 200000,
+    inputPricePer1KTokensUSD: 0.015,
+    outputPricePer1KTokensUSD: 0.075,
+    supports: { streaming: true },
+    tags: ["reasoning"],
+  },
+  {
+    id: "gemini-1.5-pro",
+    name: "Gemini 1.5 Pro",
+    provider: "Google",
+    family: "Gemini",
+    description: "State-of-the-art multimodal reasoning and search.",
+    contextWindowTokens: 1000000,
+    inputPricePer1KTokensUSD: 0.01,
+    outputPricePer1KTokensUSD: 0.03,
+    supports: { vision: true, toolUse: true },
+    tags: ["multimodal"],
+  },
+  {
+    id: "mistral-large",
+    name: "Mistral Large",
+    provider: "Mistral",
+    description: "Efficient and cost-effective model with open weights.",
+    inputPricePer1KTokensUSD: 0.002,
+    outputPricePer1KTokensUSD: 0.006,
+    tags: ["open-weight", "fast"],
+  },
+  {
+    id: "llama-3.1-70b",
+    name: "LLaMA 3.1 70B",
+    provider: "Meta",
+    family: "LLaMA",
+    description: "Open-weight with high accuracy across benchmarks.",
+    contextWindowTokens: 128000,
+    inputPricePer1KTokensUSD: 0.002,
+    outputPricePer1KTokensUSD: 0.004,
+    tags: ["open-weight"],
+  },
+  {
+    id: "mixtral-8x7b",
+    name: "Mixtral 8x7B",
+    provider: "Mistral",
+    description: "Sparse mixture of experts, balanced speed and quality.",
+    tags: ["sparse", "efficient"],
+  },
+];
 
 export function Certifications() {
   return (
     <Section id="certifications">
       <SectionHeading
         index="06"
-        eyebrow="Certifications"
-        title="Credentials that back the practice."
-        lead="A mix of earned certifications and ongoing study — listed honestly, including what's still in progress."
+        eyebrow="AI Models Reference"
+        title="Production-grade models at a glance."
+        lead="A curated selection of leading AI models with pricing, capabilities, and context window information."
       />
 
-      <motion.ul
-        variants={stagger(0.07)}
+      <motion.div
         initial="hidden"
         whileInView="show"
         viewport={viewportOnce}
-        className="mt-14 grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3"
+        className="mt-14"
       >
-        {certifications.map((c) => {
-          const earned = c.status === "Earned";
-          return (
-            <motion.li
-              key={c.name}
-              variants={fadeUp}
-              className="flex flex-col gap-4 bg-surface p-6 transition-colors hover:bg-surface-2"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span
-                  className={cn(
-                    "grid h-10 w-10 place-items-center rounded-lg border",
-                    earned
-                      ? "border-accent/25 bg-accent-faint text-accent"
-                      : "border-border bg-surface-2 text-ink-subtle"
-                  )}
-                >
-                  {earned ? <BadgeCheck size={18} /> : <CircleDashed size={18} />}
-                </span>
-                <span
-                  className={cn(
-                    "rounded-full border px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em]",
-                    earned
-                      ? "border-border text-ink-subtle"
-                      : "border-accent/20 text-accent/80"
-                  )}
-                >
-                  {c.status}
-                </span>
-              </div>
-
-              <div className="mt-auto">
-                <h3 className="text-base font-medium tracking-tight text-ink">
-                  {c.name}
-                </h3>
-                <p className="mt-1 text-sm text-ink-subtle">
-                  {c.issuer} · {c.year}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-ink-muted">
-                  {c.focus}
-                </p>
-              </div>
-            </motion.li>
-          );
-        })}
-      </motion.ul>
+        <AiModelsList models={aiModels} />
+      </motion.div>
     </Section>
   );
 }
