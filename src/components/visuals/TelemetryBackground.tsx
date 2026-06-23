@@ -65,17 +65,18 @@ export function TelemetryBackground() {
         <defs>
           <linearGradient id="trace-fade" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0" />
-            <stop offset="35%" stopColor="var(--color-accent)" stopOpacity="1" />
-            <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0.15" />
+            <stop offset="35%" stopColor="var(--color-accent)" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0.12" />
           </linearGradient>
-          <radialGradient id="vignette" cx="50%" cy="38%" r="75%">
-            <stop offset="55%" stopColor="#0a0a0a" stopOpacity="0" />
-            <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
+          <radialGradient id="vignette" cx="50%" cy="42%" r="78%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="70%" stopColor="#f8fafc" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#f8fafc" stopOpacity="0.28" />
           </radialGradient>
         </defs>
 
         {/* timeline gridlines */}
-        <g stroke="#ffffff" strokeOpacity="0.04">
+        <g stroke="#0f172a" strokeOpacity="0.08">
           {Array.from({ length: 7 }).map((_, i) => (
             <line
               key={`h-${i}`}
