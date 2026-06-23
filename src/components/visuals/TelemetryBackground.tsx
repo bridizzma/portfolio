@@ -3,45 +3,60 @@ import { motion, useReducedMotion } from "framer-motion";
 const WIDTH = 1200;
 const HEIGHT = 560;
 
-const shieldOuterPath = `M 600 120
-  C 530 120 490 170 490 242
-  L 490 302
-  L 560 428
-  L 600 488
-  L 640 428
-  L 710 302
-  L 710 242
-  C 710 170 670 120 600 120
+const shieldOuterPath = `M 600 110
+  C 525 110 475 170 475 250
+  L 475 310
+  L 540 416
+  L 600 500
+  L 660 416
+  L 725 310
+  L 725 250
+  C 725 170 675 110 600 110
   Z`;
 
-const shieldPlatePath = `M 600 146
-  C 560 146 526 174 526 220
-  L 526 264
-  L 584 398
-  L 600 424
-  L 616 398
-  L 674 264
-  L 674 220
-  C 674 174 640 146 600 146
+const shieldInnerPath = `M 600 152
+  C 560 152 530 182 530 226
+  L 530 270
+  L 588 392
+  L 600 410
+  L 612 392
+  L 670 270
+  L 670 226
+  C 670 182 640 152 600 152
   Z`;
 
-const shieldCorePath = `M 600 210
-  L 640 242
-  L 640 292
-  L 600 332
-  L 560 292
-  L 560 242
+const shieldBandPath = `M 560 198
+  L 640 198
+  C 649 198 656 205 656 214
+  L 656 240
+  L 600 278
+  L 544 240
+  L 544 214
+  C 544 205 551 198 560 198
   Z`;
 
-const circuitPaths = [
-  "M 520 240 H 580",
-  "M 620 240 H 680",
-  "M 560 276 L 560 310",
-  "M 640 276 L 640 310",
-  "M 540 360 L 560 360",
-  "M 640 360 L 660 360",
-  "M 590 220 L 610 220",
-  "M 590 320 L 610 320",
+const shieldPlatePaths = [
+  `M 495 252 L 525 266 L 525 300 L 505 308 L 495 308 Z`,
+  `M 705 252 L 675 266 L 675 300 L 695 308 L 705 308 Z`,
+  `M 560 262 L 640 262 L 660 300 L 640 312 L 560 312 L 540 300 Z`,
+];
+
+const topologyLines = [
+  "M 96 128 H 220",
+  "M 104 176 H 192",
+  "M 1104 132 H 980",
+  "M 1110 460 H 980",
+  "M 200 96 V 184",
+  "M 990 96 V 208",
+  "M 310 460 V 382",
+  "M 890 442 V 362",
+];
+
+const telemetryNodes = [
+  { x1: 200, y1: 140, x2: 260, y2: 140 },
+  { x1: 930, y1: 120, x2: 990, y2: 120 },
+  { x1: 420, y1: 420, x2: 470, y2: 420 },
+  { x1: 780, y1: 432, x2: 840, y2: 432 },
 ];
 
 export function TelemetryBackground() {
@@ -59,101 +74,104 @@ export function TelemetryBackground() {
       >
         <defs>
           <radialGradient id="bg" cx="50%" cy="40%" r="70%">
-            <stop offset="0%" stopColor="#101318" />
-            <stop offset="48%" stopColor="#06090d" />
-            <stop offset="100%" stopColor="#030405" />
+            <stop offset="0%" stopColor="#090b0f" />
+            <stop offset="42%" stopColor="#07090d" />
+            <stop offset="100%" stopColor="#020305" />
           </radialGradient>
 
-          <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#161b22" />
-            <stop offset="32%" stopColor="#1c232d" />
-            <stop offset="68%" stopColor="#0f151c" />
-            <stop offset="100%" stopColor="#141b23" />
+          <linearGradient id="panel-metal" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#121921" />
+            <stop offset="35%" stopColor="#171f28" />
+            <stop offset="75%" stopColor="#0b1118" />
+            <stop offset="100%" stopColor="#10171f" />
           </linearGradient>
 
-          <linearGradient id="metal-edge" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="rgba(124, 182, 255, 0.18)" />
-            <stop offset="45%" stopColor="rgba(95, 156, 230, 0.06)" />
-            <stop offset="100%" stopColor="rgba(124, 182, 255, 0.12)" />
+          <linearGradient id="panel-edge" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(84, 163, 255, 0.18)" />
+            <stop offset="40%" stopColor="rgba(70, 130, 204, 0.08)" />
+            <stop offset="100%" stopColor="rgba(86, 187, 255, 0.12)" />
           </linearGradient>
 
-          <linearGradient id="accent-glow" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#57c4ff" stopOpacity="0.16" />
-            <stop offset="100%" stopColor="#2e9de2" stopOpacity="0.04" />
+          <linearGradient id="glow-ring" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#4faaff" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#1a2e4c" stopOpacity="0.0" />
           </linearGradient>
 
-          <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#44c8ff" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#0b1631" stopOpacity="0" />
-          </radialGradient>
-
-          <pattern id="mesh" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-            <path d="M 0 16 L 16 0" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+          <pattern id="wide-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+            <path d="M 32 0 L 0 0 0 32" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
           </pattern>
 
-          <filter id="softglow" x="-40%" y="-40%" width="180%" height="180%">
+          <filter id="softglow" x="-30%" y="-30%" width="160%" height="160%">
             <feGaussianBlur stdDeviation="14" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            <feBlend in="SourceGraphic" in2="blur" mode="screen" />
           </filter>
         </defs>
 
         <rect width={WIDTH} height={HEIGHT} fill="url(#bg)" />
-        <rect width={WIDTH} height={HEIGHT} fill="url(#mesh)" opacity="0.08" />
+        <rect width={WIDTH} height={HEIGHT} fill="url(#wide-grid)" opacity="0.06" />
 
-        <g opacity="0.18" stroke="#69c1ff" strokeWidth="1" strokeLinecap="round">
-          <line x1="160" y1="88" x2="280" y2="88" />
-          <line x1="920" y1="102" x2="1040" y2="102" />
-          <line x1="102" y1="420" x2="220" y2="420" />
-          <line x1="980" y1="432" x2="1100" y2="432" />
+        <g opacity="0.16" stroke="#5ea7ff" strokeWidth="1" strokeLinecap="round">
+          {topologyLines.map((d, i) => (
+            <path key={i} d={d} />
+          ))}
         </g>
 
-        <circle cx="600" cy="255" r="172" fill="url(#core-glow)" />
-        <circle cx="600" cy="255" r="236" fill="url(#accent-glow)" />
+        <g opacity="0.12" stroke="#84b9ff" strokeWidth="0.8" strokeLinecap="round">
+          {telemetryNodes.map((node, index) => (
+            <path key={index} d={`M ${node.x1} ${node.y1} H ${node.x2}`} />
+          ))}
+        </g>
+
+        <circle cx="600" cy="270" r="216" fill="rgba(41, 60, 88, 0.08)" />
+        <circle cx="600" cy="270" r="250" fill="url(#glow-ring)" />
 
         <motion.g
-          initial={reduce ? undefined : { opacity: 0.95 }}
-          animate={reduce ? undefined : { opacity: [0.95, 1, 0.95] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          initial={reduce ? undefined : { opacity: 0.96, scale: 0.996 }}
+          animate={reduce ? undefined : { opacity: [0.96, 1, 0.96], scale: [0.996, 1, 0.996] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
         >
-          <path d={shieldOuterPath} fill="url(#metal)" stroke="url(#metal-edge)" strokeWidth="2" />
-          <path d={shieldPlatePath} fill="rgba(255,255,255,0.02)" />
-          <path d={shieldCorePath} fill="rgba(58, 141, 212, 0.08)" stroke="#2c6b9a" strokeWidth="1" />
+          <path d={shieldOuterPath} fill="url(#panel-metal)" stroke="url(#panel-edge)" strokeWidth="2" />
+          <path d={shieldInnerPath} fill="rgba(255,255,255,0.02)" />
+          <path d={shieldBandPath} fill="rgba(64, 138, 215, 0.07)" stroke="#2c6c9c" strokeWidth="1" />
 
-          <g stroke="#57c4ff" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.28">
-            {circuitPaths.map((d, index) => (
-              <path key={index} d={d} />
-            ))}
-          </g>
+          {shieldPlatePaths.map((d, index) => (
+            <path key={index} d={d} fill="rgba(255,255,255,0.03)" />
+          ))}
 
-          <g stroke="#7bcfff" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.18">
-            <line x1="540" y1="330" x2="560" y2="330" />
-            <line x1="640" y1="330" x2="660" y2="330" />
-            <line x1="580" y1="250" x2="620" y2="250" />
+          <g stroke="#5fb8ff" strokeWidth="1" strokeLinecap="round" opacity="0.22">
+            <path d="M 520 260 H 580" />
+            <path d="M 620 260 H 680" />
+            <path d="M 560 294 V 318" />
+            <path d="M 640 294 V 318" />
+            <path d="M 540 370 H 560" />
+            <path d="M 640 370 H 660" />
+            <path d="M 590 220 H 610" />
+            <path d="M 590 322 H 610" />
           </g>
 
           <path
-            d="M 560 190 L 640 190 L 650 240 L 640 260 L 600 260 L 560 240 Z"
-            fill="rgba(255,255,255,0.04)"
+            d="M 560 194 L 640 194 L 650 236 L 640 254 L 600 254 L 560 236 Z"
+            fill="rgba(255,255,255,0.045)"
           />
         </motion.g>
 
         <path
-          d="M 600 120 C 760 150 770 280 620 462 L 600 488 L 580 462 C 430 280 440 150 600 120 Z"
+          d="M 600 118 C 760 148 772 290 620 460 L 600 488 L 580 460 C 428 290 440 148 600 118 Z"
           fill="none"
-          stroke="#1a2d44"
+          stroke="#102339"
           strokeWidth="2"
-          opacity="0.3"
+          opacity="0.28"
         />
 
         <path
-          d="M 600 220 C 670 230 680 290 620 370 L 600 388 L 580 370 C 520 290 530 230 600 220 Z"
+          d="M 600 220 C 670 234 680 292 620 368 L 600 386 L 580 368 C 520 292 530 234 600 220 Z"
           fill="none"
-          stroke="#1f3551"
-          strokeWidth="1.5"
-          opacity="0.25"
+          stroke="#122d52"
+          strokeWidth="1.4"
+          opacity="0.24"
         />
 
-        <rect x="300" y="180" width="600" height="200" fill="none" stroke="#3e5d7c" strokeWidth="1" opacity="0.08" rx="18" />
+        <rect x="280" y="168" width="640" height="216" fill="none" stroke="#2c4f71" strokeWidth="1" opacity="0.08" rx="22" />
       </svg>
     </div>
   );
