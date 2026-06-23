@@ -1,56 +1,51 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { useMemo } from "react";
-
-/**
- * Subtle security-telemetry backdrop for the hero: a quiet field of timeline
- * gridlines with a few metric traces and sparse "event" markers. Drawn once,
- * very low contrast — meant to be felt, not watched.
- */
 
 const WIDTH = 1200;
 const HEIGHT = 560;
 
-/** Deterministic pseudo-random so the trace is stable across renders. */
-function seeded(seed: number) {
-  let s = seed % 2147483647;
-  if (s <= 0) s += 2147483646;
-  return () => (s = (s * 16807) % 2147483647) / 2147483647;
-}
+const shieldOuterPath = `M 600 120
+  C 530 120 490 170 490 242
+  L 490 302
+  L 560 428
+  L 600 488
+  L 640 428
+  L 710 302
+  L 710 242
+  C 710 170 670 120 600 120
+  Z`;
 
-function buildTrace(seed: number, baseline: number, amp: number, points = 48) {
-  const rnd = seeded(seed);
-  const step = WIDTH / (points - 1);
-  let y = baseline;
-  const coords: Array<[number, number]> = [];
-  for (let i = 0; i < points; i++) {
-    y += (rnd() - 0.5) * amp;
-    y = Math.max(baseline - amp * 1.6, Math.min(baseline + amp * 1.6, y));
-    coords.push([i * step, y]);
-  }
-  return coords.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
-}
+const shieldPlatePath = `M 600 146
+  C 560 146 526 174 526 220
+  L 526 264
+  L 584 398
+  L 600 424
+  L 616 398
+  L 674 264
+  L 674 220
+  C 674 174 640 146 600 146
+  Z`;
+
+const shieldCorePath = `M 600 210
+  L 640 242
+  L 640 292
+  L 600 332
+  L 560 292
+  L 560 242
+  Z`;
+
+const circuitPaths = [
+  "M 520 240 H 580",
+  "M 620 240 H 680",
+  "M 560 276 L 560 310",
+  "M 640 276 L 640 310",
+  "M 540 360 L 560 360",
+  "M 640 360 L 660 360",
+  "M 590 220 L 610 220",
+  "M 590 320 L 610 320",
+];
 
 export function TelemetryBackground() {
   const reduce = useReducedMotion();
-
-  const traces = useMemo(
-    () => [
-      { d: buildTrace(7, 150, 34), opacity: 0.5, width: 1.2 },
-      { d: buildTrace(23, 300, 52), opacity: 0.32, width: 1 },
-      { d: buildTrace(91, 440, 26), opacity: 0.22, width: 1 },
-    ],
-    []
-  );
-
-  const events = useMemo(
-    () => [
-      { x: 250, y: 150 },
-      { x: 560, y: 296 },
-      { x: 820, y: 132 },
-      { x: 1010, y: 318 },
-    ],
-    []
-  );
 
   return (
     <div
@@ -63,84 +58,102 @@ export function TelemetryBackground() {
         className="absolute inset-0 h-full w-full"
       >
         <defs>
-          <linearGradient id="trace-fade" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0" />
-            <stop offset="35%" stopColor="var(--color-accent)" stopOpacity="1" />
-            <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0.15" />
-          </linearGradient>
-          <radialGradient id="vignette" cx="50%" cy="38%" r="75%">
-            <stop offset="55%" stopColor="#0a0a0a" stopOpacity="0" />
-            <stop offset="100%" stopColor="#0a0a0a" stopOpacity="1" />
+          <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stopColor="#101318" />
+            <stop offset="48%" stopColor="#06090d" />
+            <stop offset="100%" stopColor="#030405" />
           </radialGradient>
+
+          <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#161b22" />
+            <stop offset="32%" stopColor="#1c232d" />
+            <stop offset="68%" stopColor="#0f151c" />
+            <stop offset="100%" stopColor="#141b23" />
+          </linearGradient>
+
+          <linearGradient id="metal-edge" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(124, 182, 255, 0.18)" />
+            <stop offset="45%" stopColor="rgba(95, 156, 230, 0.06)" />
+            <stop offset="100%" stopColor="rgba(124, 182, 255, 0.12)" />
+          </linearGradient>
+
+          <linearGradient id="accent-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#57c4ff" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#2e9de2" stopOpacity="0.04" />
+          </linearGradient>
+
+          <radialGradient id="core-glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#44c8ff" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="#0b1631" stopOpacity="0" />
+          </radialGradient>
+
+          <pattern id="mesh" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <path d="M 0 16 L 16 0" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
+          </pattern>
+
+          <filter id="softglow" x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur stdDeviation="14" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
         </defs>
 
-        {/* timeline gridlines */}
-        <g stroke="#ffffff" strokeOpacity="0.04">
-          {Array.from({ length: 7 }).map((_, i) => (
-            <line
-              key={`h-${i}`}
-              x1="0"
-              x2={WIDTH}
-              y1={(HEIGHT / 7) * (i + 0.5)}
-              y2={(HEIGHT / 7) * (i + 0.5)}
-            />
-          ))}
-          {Array.from({ length: 13 }).map((_, i) => (
-            <line
-              key={`v-${i}`}
-              y1="0"
-              y2={HEIGHT}
-              x1={(WIDTH / 13) * (i + 0.5)}
-              x2={(WIDTH / 13) * (i + 0.5)}
-            />
-          ))}
+        <rect width={WIDTH} height={HEIGHT} fill="url(#bg)" />
+        <rect width={WIDTH} height={HEIGHT} fill="url(#mesh)" opacity="0.08" />
+
+        <g opacity="0.18" stroke="#69c1ff" strokeWidth="1" strokeLinecap="round">
+          <line x1="160" y1="88" x2="280" y2="88" />
+          <line x1="920" y1="102" x2="1040" y2="102" />
+          <line x1="102" y1="420" x2="220" y2="420" />
+          <line x1="980" y1="432" x2="1100" y2="432" />
         </g>
 
-        {/* metric traces */}
-        {traces.map((t, i) => (
-          <motion.polyline
-            key={i}
-            points={t.d}
-            fill="none"
-            stroke="url(#trace-fade)"
-            strokeWidth={t.width}
-            strokeOpacity={t.opacity}
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            initial={reduce ? undefined : { pathLength: 0, opacity: 0 }}
-            animate={reduce ? undefined : { pathLength: 1, opacity: t.opacity }}
-            transition={{ duration: 2.2, delay: 0.2 + i * 0.25, ease: [0.22, 1, 0.36, 1] }}
-          />
-        ))}
+        <circle cx="600" cy="255" r="172" fill="url(#core-glow)" />
+        <circle cx="600" cy="255" r="236" fill="url(#accent-glow)" />
 
-        {/* sparse event markers, gently pulsing */}
-        {events.map((e, i) => (
-          <g key={`e-${i}`}>
-            <circle cx={e.x} cy={e.y} r="2.5" fill="var(--color-accent)" />
-            {!reduce && (
-              <motion.circle
-                cx={e.x}
-                cy={e.y}
-                r="2.5"
-                fill="none"
-                stroke="var(--color-accent)"
-                strokeWidth="1"
-                initial={{ scale: 1, opacity: 0.6 }}
-                animate={{ scale: 6, opacity: 0 }}
-                transition={{
-                  duration: 3.4,
-                  delay: 1 + i * 0.7,
-                  repeat: Infinity,
-                  repeatDelay: 2.5,
-                  ease: "easeOut",
-                }}
-                style={{ transformBox: "fill-box", transformOrigin: "center" }}
-              />
-            )}
+        <motion.g
+          initial={reduce ? undefined : { opacity: 0.95 }}
+          animate={reduce ? undefined : { opacity: [0.95, 1, 0.95] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <path d={shieldOuterPath} fill="url(#metal)" stroke="url(#metal-edge)" strokeWidth="2" />
+          <path d={shieldPlatePath} fill="rgba(255,255,255,0.02)" />
+          <path d={shieldCorePath} fill="rgba(58, 141, 212, 0.08)" stroke="#2c6b9a" strokeWidth="1" />
+
+          <g stroke="#57c4ff" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.28">
+            {circuitPaths.map((d, index) => (
+              <path key={index} d={d} />
+            ))}
           </g>
-        ))}
 
-        <rect width={WIDTH} height={HEIGHT} fill="url(#vignette)" />
+          <g stroke="#7bcfff" strokeWidth="1" strokeLinecap="round" strokeOpacity="0.18">
+            <line x1="540" y1="330" x2="560" y2="330" />
+            <line x1="640" y1="330" x2="660" y2="330" />
+            <line x1="580" y1="250" x2="620" y2="250" />
+          </g>
+
+          <path
+            d="M 560 190 L 640 190 L 650 240 L 640 260 L 600 260 L 560 240 Z"
+            fill="rgba(255,255,255,0.04)"
+          />
+        </motion.g>
+
+        <path
+          d="M 600 120 C 760 150 770 280 620 462 L 600 488 L 580 462 C 430 280 440 150 600 120 Z"
+          fill="none"
+          stroke="#1a2d44"
+          strokeWidth="2"
+          opacity="0.3"
+        />
+
+        <path
+          d="M 600 220 C 670 230 680 290 620 370 L 600 388 L 580 370 C 520 290 530 230 600 220 Z"
+          fill="none"
+          stroke="#1f3551"
+          strokeWidth="1.5"
+          opacity="0.25"
+        />
+
+        <rect x="300" y="180" width="600" height="200" fill="none" stroke="#3e5d7c" strokeWidth="1" opacity="0.08" rx="18" />
       </svg>
     </div>
   );
