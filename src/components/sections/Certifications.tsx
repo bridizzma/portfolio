@@ -9,53 +9,22 @@ const aiModels = [
     name: "Fortinet NSE 6 – FortiSIEM 7.2 Analyst",
     provider: "Fortinet",
     family: "Network Security Expert",
-<<<<<<< HEAD
     description: "Advanced certification demonstrating expertise in FortiSIEM 7.2 platform operations, threat detection, and security event analysis. Specialized knowledge in enterprise SIEM deployment and incident response workflows.",
     context: "Expert Level",
     usecase : "SIEM Operations",
-    outputPricePer1KTokensUSD: 0.015,
     supports: { SIEM: true, "Threat Detection": true, functionCalling: true },
-=======
-    iconClass: "c-openai",
-    iconText: "FRT",
-    description:
-      "Advanced certification demonstrating expertise in FortiSIEM 7.2 platform operations, threat detection, and security event analysis. Specialized knowledge in enterprise SIEM deployment and incident response workflows.",
-    context: "Expert Level",
-    useCase: "SIEM Operations",
-    caps: [
-      { t: "SIEM", c: "hi" },
-      { t: "Threat Detection", c: "hi" },
-      { t: "Event Analysis", c: "mid" },
-      { t: "#enterprise", c: "lo" },
-    ],
->>>>>>> 3cd7ab5 (Update certifications data and preview UI)
   },
   {
     id: "fortinet-nse123",
     name: "Fortinet NSE 1, 2, 3 – Network Security Expert (Certified Associate)",
     provider: "Fortinet",
     family: "Network Security Expert",
-<<<<<<< HEAD
     description: "Comprehensive foundational and intermediate certifications covering network security fundamentals, threat prevention, and security architecture. Demonstrates competency across Fortinet security ecosystem.",
     contextWindowTokens: 200000,
     inputPricePer1KTokensUSD: 0.015,
     outputPricePer1KTokensUSD: 0.075,
     supports: { streaming: true },
     tags: ["reasoning"],
-=======
-    iconClass: "c-anthropic",
-    iconText: "NSE",
-    description:
-      "Comprehensive foundational and intermediate certifications covering network security fundamentals, threat prevention, and security architecture. Demonstrates competency across Fortinet security ecosystem.",
-    context: "Associate Level",
-    useCase: "Network Security",
-    caps: [
-      { t: "Networking", c: "hi" },
-      { t: "Security Arch", c: "hi" },
-      { t: "Threat Prevention", c: "mid" },
-      { t: "#foundation", c: "lo" },
-    ],
->>>>>>> 3cd7ab5 (Update certifications data and preview UI)
   },
   {
     id: "DFE",
